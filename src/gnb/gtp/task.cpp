@@ -151,7 +151,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         auto cont = new gtp::PduSessionContainerExtHeader();
         cont->pduSessionInformation = std::move(ul);
         gtp.extHeaders.push_back(std::unique_ptr<gtp::GtpExtHeader>(cont));
-
+        m_logger->debug("Sending uplink data to GTP: %s", pdu.toString());
         OctetString gtpPdu;
         if (!gtp::EncodeGtpMessage(gtp, gtpPdu))
             m_logger->err("Uplink data failure, GTP encoding failed");
