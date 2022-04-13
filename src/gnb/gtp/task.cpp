@@ -153,7 +153,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         gtp.extHeaders.push_back(std::unique_ptr<gtp::GtpExtHeader>(cont));
         m_logger->debug("Sending uplink data to GTP\n");
         std::string hexStr = pdu.toHexString(); 
-        for (int i = 0; i < hexStr.length; i++) {
+        for (int i = 0; i < hexStr.length(); i++) {
             printf(" %2x", hexStr[i]);
         }
         printf("\n");
