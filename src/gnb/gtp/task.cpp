@@ -123,6 +123,11 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
 {
     const uint8_t *data = pdu.data();
 
+    // print the uint_8 array
+    for (int i = 0; i < sizeof data; i++)
+        printf("%02x ", data[i]);
+    printf("\n"); 
+
     // ignore non IPv4 packets
     if ((data[0] >> 4 & 0xF) != 4)
         return;
@@ -151,11 +156,6 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         auto cont = new gtp::PduSessionContainerExtHeader();
         cont->pduSessionInformation = std::move(ul);
         gtp.extHeaders.push_back(std::unique_ptr<gtp::GtpExtHeader>(cont));
-        m_logger->debug("Sending uplink data to GTP");
-        std::string hexStr = pdu.toHexString();
-        const char* hexCStr = hexStr.c_str(); 
-        while(*hexCStr)
-            m_logger->debug("%02x", (unsigned int) *hexCStr++);
         OctetString gtpPdu;
         if (!gtp::EncodeGtpMessage(gtp, gtpPdu))
             m_logger->err("Uplink data failure, GTP encoding failed");
