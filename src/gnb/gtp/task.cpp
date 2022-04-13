@@ -128,7 +128,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         printf("%02x ", data[i]);
     printf("\n"); 
 
-    std::string pdu_str = reinterpret_cast<char *>(data); 
+    std::string pdu_str = const_cast<char*>(reinterpret_cast<const char *>(data)); 
     printf("%s\n", pdu_str.c_str());
 
 
