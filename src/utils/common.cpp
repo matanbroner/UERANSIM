@@ -223,6 +223,16 @@ std::string utils::VectorToHexString(const std::vector<uint8_t> &hex)
     return str;
 }
 
+std::string utils::VectorToAsciiString(const std::vector<uint8_t> &ascii)
+{
+    std::string str(ascii.size(), '\0');
+    for (size_t i = 0; i < ascii.size(); i++)
+    {
+        str[i] = ascii[i];
+    }
+    return str;
+}
+
 bool utils::TryParseInt(const std::string &str, int &output)
 {
     return TryParseInt(str.c_str(), output);

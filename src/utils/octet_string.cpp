@@ -138,6 +138,11 @@ std::string OctetString::toHexString() const
     return utils::VectorToHexString(m_data);
 }
 
+std::string OctetString::toAsciiString() const
+{
+    return utils::VectorToAsciiString(m_data);
+}
+
 OctetString OctetString::subCopy(int index) const
 {
     return subCopy(index, length() - index);

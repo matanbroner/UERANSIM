@@ -332,6 +332,7 @@ bool PduSessionInformation::Encode(const PduSessionInformation &pdu, OctetString
     if (pdu.pduType != 0 && pdu.pduType != 1)
         return false;
 
+    std::cout << "GTP Encoding OctestString" << stream.toAsciiString() << std::endl;
     int initialLength = stream.length();
 
     if (pdu.pduType == 0)
