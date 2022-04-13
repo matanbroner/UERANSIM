@@ -221,7 +221,7 @@ std::string utils::VectorToHexString(const std::vector<uint8_t> &hex)
     return str;
 }
 
-std::string VectorToString(const std::vector<uint8_t> &data)
+std::string utils::VectorToString(const std::vector<uint8_t> &data)
 {
     int len = data.size();
     std::string str(len, '0');
