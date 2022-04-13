@@ -124,23 +124,9 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     const uint8_t *data = pdu.data();
 
     // print the uint_8 array
-    for (int i = 0; i < sizeof data; i++)
+    for (int i = 0; i < sizeof(data)/sizeof(uint8_t);; i++)
         printf("%02x ", data[i]);
     printf("\n"); 
-
-    std::string pdu_str = const_cast<char*>(reinterpret_cast<const char *>(data)); 
-    printf("%s\n", pdu_str.c_str());
-
-
-    // convert uint8 to string
-    // std::ostringstream convert;
-    // for (int a = 0; a < sizeof data; a++) {
-    //     convert << (int)data[a];
-    // }
-
-    // std::string pdu_str = convert.str();
-
-    // std::cout << pdu_str << std::endl;
 
     // ignore non IPv4 packets
     if ((data[0] >> 4 & 0xF) != 4)
