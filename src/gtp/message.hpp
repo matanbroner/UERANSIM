@@ -11,6 +11,7 @@
 #include "ext_header.hpp"
 #include <cstdint>
 #include <memory>
+#include <iostream>
 #include <optional>
 #include <vector>
 

@@ -59,6 +59,7 @@ static bool EncodeExtensionHeader(const GtpExtHeader &header, OctetString &strea
 
 bool EncodeGtpMessage(const GtpMessage &gtp, OctetString &stream)
 {
+    std::cout << "EncodeGtpMessage" << stream.toString() << std::endl;
     int initialLength = stream.length();
 
     bool pn = gtp.nPduNum.has_value();

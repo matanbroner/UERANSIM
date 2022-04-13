@@ -70,6 +70,7 @@ class OctetString
 
   public:
     [[nodiscard]] std::string toHexString() const;
+    [[nodiscard]] std::string toString() const;
     [[nodiscard]] OctetString copy() const;
     [[nodiscard]] OctetString subCopy(int index) const;
     [[nodiscard]] OctetString subCopy(int index, int length) const;

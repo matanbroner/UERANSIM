@@ -221,6 +221,16 @@ std::string utils::VectorToHexString(const std::vector<uint8_t> &hex)
     return str;
 }
 
+std::string VectorToString(const std::vector<uint8_t> &data)
+{
+    int len = data.size();
+    std::string str(len, '0');
+    for (int i = 0; i < len; i++)
+    {
+        str[i] = static_cast<char>(data[i]);
+    }
+}
+
 int utils::ParseInt(const std::string &str)
 {
     return ParseInt(str.c_str());

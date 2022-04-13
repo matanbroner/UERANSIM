@@ -22,6 +22,7 @@ namespace utils
 
 std::vector<uint8_t> HexStringToVector(const std::string &hex);
 std::string VectorToHexString(const std::vector<uint8_t> &hex);
+std::string VectorToString(const std::vector<uint8_t> &data);
 int GetIpVersion(const std::string &address);
 OctetString IpToOctetString(const std::string &address);
 std::string OctetStringToIp(const OctetString &address);
