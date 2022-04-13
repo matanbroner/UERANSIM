@@ -229,6 +229,7 @@ std::string VectorToString(const std::vector<uint8_t> &data)
     {
         str[i] = static_cast<char>(data[i]);
     }
+    return str;
 }
 
 int utils::ParseInt(const std::string &str)
