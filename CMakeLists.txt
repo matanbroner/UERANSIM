@@ -33,7 +33,7 @@ target_link_libraries(nr-gnb pthread)
 
 # Libpacketmachine
 link_directories(../packetmachine/lib)
-target_link_libraries(nr-gnb libpacketmachine)
+target_link_libraries(nr-gnb packetmachine)
 
 target_compile_options(nr-gnb PRIVATE -Wall -Wextra -pedantic)
 
