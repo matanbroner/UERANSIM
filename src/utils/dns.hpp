@@ -16,7 +16,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "~/pcapplusplus-21.11-source-linux/PcapPlusPlus/Packet++/header/Packet.h"
 
 namespace utils
 {
