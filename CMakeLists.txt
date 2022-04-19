@@ -30,7 +30,10 @@ add_subdirectory(src/ue)
 add_executable(nr-gnb src/gnb.cpp)
 
 target_link_libraries(nr-gnb pthread)
-target_link_libraries(main ../packetmachine/lib/libpacketmachine.a)
+
+# Libpacketmachine
+find_library(LIP_PKT_MCHN libpacketmachine)
+target_link_libraries(nr-gnb "${LIP_PKT_MCHN}")
 
 target_compile_options(nr-gnb PRIVATE -Wall -Wextra -pedantic)
 
