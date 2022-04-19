@@ -3,6 +3,8 @@ project(ueransim)
 
 set(CMAKE_CXX_STANDARD 17)
 
+include(ReadVars.cmake)
+
 include_directories(src)
 
 #################### SUB DIRECTORIES ####################
@@ -31,7 +33,7 @@ add_executable(nr-gnb src/gnb.cpp)
 
 target_link_libraries(nr-gnb pthread)
 
-
+ReadVariables(/usr/local/etc/PcapPlusPlus.mk)
 
 target_compile_options(nr-gnb PRIVATE -Wall -Wextra -pedantic)
 
