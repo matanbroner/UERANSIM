@@ -16,6 +16,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <packetmachine.hpp>
 
 namespace utils
 {

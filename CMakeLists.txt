@@ -31,9 +31,9 @@ add_executable(nr-gnb src/gnb.cpp)
 
 target_link_libraries(nr-gnb pthread)
 
-# Libpacketmachine
-link_directories(../packetmachine/lib)
-target_link_libraries(nr-gnb packetmachine)
+# Pcapplus
+find_package(pcapplusplus REQUIRED)
+include_directories(${PCAPPLUSPLUS_INCLUDE_DIRS})
 
 target_compile_options(nr-gnb PRIVATE -Wall -Wextra -pedantic)
 
