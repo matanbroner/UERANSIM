@@ -32,8 +32,8 @@ add_executable(nr-gnb src/gnb.cpp)
 target_link_libraries(nr-gnb pthread)
 
 # Libpacketmachine
-find_library(LIP_PKT_MCHN libpacketmachine)
-target_link_libraries(nr-gnb "${LIP_PKT_MCHN}")
+link_directories(../packetmachine/lib)
+target_link_libraries(GLBall libpacketmachine)
 
 target_compile_options(nr-gnb PRIVATE -Wall -Wextra -pedantic)
 
