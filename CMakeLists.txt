@@ -33,8 +33,6 @@ add_executable(nr-gnb src/gnb.cpp)
 
 target_link_libraries(nr-gnb pthread)
 
-ReadVariables(/usr/local/etc/PcapPlusPlus.mk)
-
 target_compile_options(nr-gnb PRIVATE -Wall -Wextra -pedantic)
 
 target_link_libraries(nr-gnb asn-rrc)
