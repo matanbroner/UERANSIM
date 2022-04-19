@@ -30,6 +30,7 @@ add_subdirectory(src/ue)
 add_executable(nr-gnb src/gnb.cpp)
 
 target_link_libraries(nr-gnb pthread)
+target_link_libraries(main ../packetmachine/lib/libpacketmachine.a)
 
 target_compile_options(nr-gnb PRIVATE -Wall -Wextra -pedantic)
 
