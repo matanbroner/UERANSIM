@@ -16,7 +16,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <packetmachine.hpp>
+#include <IPv4Layer.h>
+#include <Packet.h>
 
 namespace utils
 {
