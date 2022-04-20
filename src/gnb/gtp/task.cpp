@@ -146,11 +146,17 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
 
         const uint8_t *new_data = utils::packet_to_buffer(&p);
         OctetString new_pdu = OctetString::FromArray(new_data, sizeof(new_data) / sizeof(uint8_t));
-        pdu = std::move(new_pdu);
+        // pdu = std::move(new_pdu);
 
         // print the uint_8 array
+        printf("Original PDU: \n");
         for (int i = 0; i < pdu.length(); i++)
             printf("%02x ", data[i]);
+        printf("\n");
+
+        printf("New PDU: \n");
+        for (int i = 0; i < new_pdu.length(); i++)
+            printf("%02x ", new_data[i]);
         printf("\n");
     }
 
