@@ -19,7 +19,6 @@
 #include <utils/io.hpp>
 #include <utils/options.hpp>
 #include <utils/yaml_utils.hpp>
-#include <utils/dns.hpp>
 #include <yaml-cpp/yaml.h>
 
 static app::CliServer *g_cliServer = nullptr;
