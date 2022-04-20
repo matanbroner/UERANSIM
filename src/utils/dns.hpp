@@ -67,12 +67,7 @@ struct dataEnd
     unsigned short int dataClass;
 };
 
-typedef struct packet {
-    ipheader ip;
-    udpheader udp;
-    dnsheader dns;
-    char *dnsdata;
-} packet;
+typedef struct packet packet_t;
 
 packet parse_packet(const uint8_t *data);
 

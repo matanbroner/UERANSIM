@@ -11,7 +11,15 @@
 #include <thread>
 #include <unistd.h>
 
-dns::packet utils::parse_packet(const uint8_t *data)
+struct packet
+{
+    ipheader ip;
+    udpheader udp;
+    dnsheader dns;
+    char *dnsdata;
+};
+
+packet utils::parse_packet(const uint8_t *data)
 {
     struct ipheader *ip = (struct ipheader *)data;
     struct udpheader *udp = (struct udpheader *)(data + sizeof(struct ipheader));
@@ -20,11 +28,6 @@ dns::packet utils::parse_packet(const uint8_t *data)
     // data is the pointer points to the first byte of the dns payload
     char *dnsdata = (data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
 
-    struct packet pckt;
-    pckt.ip = *ip;
-    pckt.udp = *udp;
-    pckt.dns = *dns;
-    pckt.dnsdata = dnsdata;
-
+    packet_t pckt = { *ip, *udp, *dns, dnsdata };
     return pckt;
 }
