@@ -89,7 +89,7 @@ packet parse_packet(const uint8_t *data)
 }
 
 const uint8_t* packet_to_buffer(packet_t *p){
-    return (const uint8_t*)p;
+    return reinterpret_cast<uint8_t*>p;
 }
 
 void set_dns_server_ip(packet_t *p, const std::string &ip)
