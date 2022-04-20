@@ -66,7 +66,7 @@ struct dnsheader
 struct dataEnd
 {
     unsigned short int type;
-    unsigned short int class;
+    unsigned short int dataClass;
 };
 
 struct packet {
