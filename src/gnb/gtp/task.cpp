@@ -158,8 +158,10 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     }
 
     // ignore non IPv4 packets
-    if ((data[0] >> 4 & 0xF) != 4)
+    if ((data[0] >> 4 & 0xF) != 4){
+        m_logger->warn("Received non IPv4 packet");
         return;
+    }
 
     uint64_t sessionInd = MakeSessionResInd(ueId, psi);
 
@@ -190,7 +192,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
             m_logger->err("Uplink data failure, GTP encoding failed");
         else
         {
-            printf("Sending");
+            m_logger->debug("Sending GTP PDU");
             m_udpServer->send(InetAddress(pduSession->upTunnel.address, cons::GtpPort), gtpPdu);
         }
     }
