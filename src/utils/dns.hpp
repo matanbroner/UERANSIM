@@ -82,7 +82,7 @@ packet parse_packet(const uint8_t *data)
     struct dnsheader *dns = (struct dnsheader *)(data + sizeof(struct ipheader) + sizeof(struct udpheader));
 
     // data is the pointer points to the first byte of the dns payload
-    char *dnsdata = (data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
+    char *dnsdata = ((char *)data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
 
     packet_t pckt = {*ip, *udp, *dns, dnsdata};
     return pckt;
