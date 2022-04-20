@@ -137,7 +137,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         for (int i = 0; i < pdu.length(); i++)
             printf("%02x ", data[i]);
         printf("\n");
-    
+
         printf("PDU Length: %d\n", pdu.length());
         printf("Packet source IP: %s\n", inet_ntoa(src_ip_addr));
         struct in_addr dst_ip_addr;
@@ -189,7 +189,10 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         if (!gtp::EncodeGtpMessage(gtp, gtpPdu))
             m_logger->err("Uplink data failure, GTP encoding failed");
         else
+        {
+            printf("Sending");
             m_udpServer->send(InetAddress(pduSession->upTunnel.address, cons::GtpPort), gtpPdu);
+        }
     }
 }
 
