@@ -132,18 +132,19 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
 
     if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0")
     {
+        // (1) Display the unmodified packet assuming it is not sent internally from 0.0.0.0
         printf("Original PDU: \n");
         for (int i = 0; i < pdu.length(); i++)
             printf("%02x ", data[i]);
         printf("\n");
-
+    
         printf("PDU Length: %d\n", pdu.length());
         printf("Packet source IP: %s\n", inet_ntoa(src_ip_addr));
         struct in_addr dst_ip_addr;
         dst_ip_addr.s_addr = p.ip->iph_destip;
         printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
-        std::string fake_dns_ip = "1.1.1.1";
+        std::string fake_dns_ip = "127.0.0.1";
         printf("Changing packet dest IP to %s\n", fake_dns_ip.c_str());
         utils::set_dns_server_ip(&p, fake_dns_ip);
         dst_ip_addr.s_addr = p.ip->iph_destip;
