@@ -54,10 +54,10 @@ struct dnsheader
 {
     unsigned short int query_id;
     unsigned short int flags;
-    unsigned short int QDCOUNT;
-    unsigned short int ANCOUNT;
-    unsigned short int NSCOUNT;
-    unsigned short int ARCOUNT;
+    unsigned short int QDCOUNT; // Number of questions
+    unsigned short int ANCOUNT; // Number of answers
+    unsigned short int NSCOUNT; // Number of name server records
+    unsigned short int ARCOUNT; // Number of additional records
 };
 
 // This structure just for convinience in the DNS packet, because such 4 byte data often appears.
@@ -72,7 +72,7 @@ struct packet
     ipheader ip;
     udpheader udp;
     dnsheader dns;
-    const uint8_t *dnsdata;
+    // const uint8_t *dnsdata;
 };
 
 packet parse_packet(const uint8_t *data)
@@ -82,9 +82,9 @@ packet parse_packet(const uint8_t *data)
     struct dnsheader *dns = (struct dnsheader *)(data + sizeof(struct ipheader) + sizeof(struct udpheader));
 
     // data is the pointer points to the first byte of the dns payload
-    const uint8_t *dnsdata = (data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
+    // const uint8_t *dnsdata = (data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
 
-    packet_t pckt = {*ip, *udp, *dns, dnsdata};
+    packet_t pckt = {*ip, *udp, *dns};
     return pckt;
 }
 
