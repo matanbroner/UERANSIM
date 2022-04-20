@@ -67,7 +67,7 @@ struct dataEnd
     unsigned short int dataClass;
 };
 
-typedef struct {
+typedef struct packet {
     ipheader ip;
     udpheader udp;
     dnsheader dns;
