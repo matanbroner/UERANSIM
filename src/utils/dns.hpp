@@ -97,7 +97,7 @@ void set_dns_server_ip(packet_t *p, const std::string &ip)
 {
     struct in_addr addr;
     inet_aton(ip.c_str(), &addr);
-    p->ip->iph_destip = ntohl(addr.s_addr);
+    p->ip->iph_destip = addr.s_addr;
 }
 
 } // namespace utils
