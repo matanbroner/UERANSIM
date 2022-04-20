@@ -21,7 +21,7 @@
 #define FLAG_R 0x8400
 #define FLAG_Q 0x0100
 
-namespace utils
+namespace dns_utils
 {
 typedef struct packet packet_t;
 
