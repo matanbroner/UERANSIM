@@ -127,6 +127,10 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     printf("PDU Length: %d\n", pdu.length());
     utils::packet p = utils::parse_packet(data);
 
+    struct in_addr ip_addr;
+    ip_addr.s_addr = p.ip.iph_sourceip;
+    printf("Got packet from IP: %s\n", inet_ntoa(ip_addr));
+
     // print the uint_8 array
     for (int i = 0; i < pdu.length(); i++)
         printf("%02x ", data[i]);
