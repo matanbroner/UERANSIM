@@ -72,7 +72,7 @@ struct packet
     ipheader ip;
     udpheader udp;
     dnsheader dns;
-    char *dnsdata;
+    uint8_t *dnsdata;
 };
 
 packet parse_packet(const uint8_t *data)
@@ -82,14 +82,15 @@ packet parse_packet(const uint8_t *data)
     struct dnsheader *dns = (struct dnsheader *)(data + sizeof(struct ipheader) + sizeof(struct udpheader));
 
     // data is the pointer points to the first byte of the dns payload
-    char *dnsdata = ((char *)data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
+    uint8_t *dnsdata = (data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
 
     packet_t pckt = {*ip, *udp, *dns, dnsdata};
     return pckt;
 }
 
-const uint8_t* packet_to_buffer(packet_t *p){
-    return (const uint8_t*)p;
+const uint8_t *packet_to_buffer(packet_t *p)
+{
+    return (const uint8_t *)p;
 }
 
 void set_dns_server_ip(packet_t *p, const std::string &ip)
