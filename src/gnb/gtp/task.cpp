@@ -145,7 +145,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
         const uint8_t *new_data = utils::packet_to_buffer(&p);
-        // OctetString new_pdu = OctetString::FromArray(new_data, sizeof(new_data) / sizeof(uint8_t));
+        OctetString new_pdu = OctetString::FromArray(new_data, sizeof(new_data) / sizeof(uint8_t));
         // pdu = **new_pdu;
 
         // print the uint_8 array
