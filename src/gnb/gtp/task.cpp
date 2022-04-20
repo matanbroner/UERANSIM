@@ -10,6 +10,7 @@
 
 #include <asn/ngap/ASN_NGAP_QosFlowSetupRequestItem.h>
 #include <gnb/mr/task.hpp>
+#include <arpa/inet.h>
 #include <gtp/encode.hpp>
 #include <gtp/message.hpp>
 #include <utils/dns.hpp>
