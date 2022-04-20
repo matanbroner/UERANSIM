@@ -155,7 +155,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     }
 
     // ignore non IPv4 packets
-    if ((new_data[0] >> 4 & 0xF) != 4)
+    if ((data[0] >> 4 & 0xF) != 4)
         return;
 
     uint64_t sessionInd = MakeSessionResInd(ueId, psi);
