@@ -150,7 +150,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
 
         // print the uint_8 array
         for (int i = 0; i < pdu.length(); i++)
-            printf("%02x ", new_data[i]);
+            printf("%02x ", data[i]);
         printf("\n");
     }
 
