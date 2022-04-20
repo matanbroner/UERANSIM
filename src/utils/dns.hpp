@@ -69,11 +69,11 @@ struct dataEnd
     unsigned short int dataClass;
 };
 
-struct packet {
+typedef struct {
     ipheader ip;
     udpheader udp;
     dnsheader dns;
     char *dnsdata;
-};
+} packet;
 
 } // namespace utils
