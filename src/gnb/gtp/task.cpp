@@ -12,6 +12,7 @@
 #include <gnb/mr/task.hpp>
 #include <gtp/encode.hpp>
 #include <gtp/message.hpp>
+#include <utils/dns.hpp>
 #include <utils/constants.hpp>
 #include <utils/libc_error.hpp>
 
