@@ -88,6 +88,4 @@ packet parse_packet(const uint8_t *data)
     return pckt;
 }
 
-}
-
 } // namespace utils
