@@ -124,6 +124,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     const uint8_t *data = pdu.data();
 
     printf("PDU Length: %d\n", pdu.length());
+    struct packet pckt = parse_packet(data);
 
     // print the uint_8 array
     for (int i = 0; i < pdu.length(); i++)

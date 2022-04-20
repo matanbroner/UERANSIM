@@ -17,32 +17,64 @@
 #include <string>
 #include <vector>
 
+#define PCKT_LEN 8192
+#define FLAG_R 0x8400
+#define FLAG_Q 0x0100
+
 namespace utils
 {
-bool is_dns_packet(const uint8_t *data);
+bool parse_packet(const uint8_t *data);
 
-#pragma pack(push, 1)
-typedef struct
+// Ref: https://web.ecs.syr.edu/~wedu/seed/Labs_12.04/Networking/DNS_Remote/udp.c
+// IP header's structure
+struct ipheader
 {
-    uint16_t id; // identification number 2b
+    unsigned char iph_ihl : 4, iph_ver : 4;
+    unsigned char iph_tos;
+    unsigned short int iph_len;
+    unsigned short int iph_ident;
+    //    unsigned char      iph_flag;
+    unsigned short int iph_offset;
+    unsigned char iph_ttl;
+    unsigned char iph_protocol;
+    unsigned short int iph_chksum;
+    unsigned int iph_sourceip;
+    unsigned int iph_destip;
+};
 
-    uint8_t rd : 1;     // recursion desired
-    uint8_t tc : 1;     // truncated message
-    uint8_t aa : 1;     // authoritive answer
-    uint8_t opcode : 4; // purpose of message
-    uint8_t qr : 1;     // query/response flag
+// UDP header's structure
+struct udpheader
+{
+    unsigned short int udph_srcport;
+    unsigned short int udph_destport;
+    unsigned short int udph_len;
+    unsigned short int udph_chksum;
+};
 
-    uint8_t rcode : 4; // response code
-    uint8_t cd : 1;    // checking disabled
-    uint8_t ad : 1;    // authenticated data
-    uint8_t z : 1;     // its z! reserved
-    uint8_t ra : 1;    // recursion available 4b
+// DNS header's structure
+struct dnsheader
+{
+    unsigned short int query_id;
+    unsigned short int flags;
+    unsigned short int QDCOUNT;
+    unsigned short int ANCOUNT;
+    unsigned short int NSCOUNT;
+    unsigned short int ARCOUNT;
+};
 
-    uint16_t q_count;    // number of question entries 6b
-    uint16_t ans_count;  // number of answer entries 8b
-    uint16_t auth_count; // number of authority entries 10b
-    uint16_t add_count;  // number of resource entries 12b
-} Dns_Header, *Dns_Header_P;
-#pragma pack(pop)
+// This structure just for convinience in the DNS packet, because such 4 byte data often appears.
+struct dataEnd
+{
+    unsigned short int type;
+    unsigned short int class;
+};
+
+struct packet {
+    ipheader ip;
+    udpheader udp;
+    dnsheader dns;
+    char *dnsdata;
+};
+}
 
 } // namespace utils
