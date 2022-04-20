@@ -125,37 +125,37 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
 {
     const uint8_t *data = pdu.data();
 
-    // utils::packet p = utils::parse_packet(data);
+    utils::packet p = utils::parse_packet(data);
 
-    // struct in_addr src_ip_addr;
-    // src_ip_addr.s_addr = p.ip->iph_sourceip;
+    struct in_addr src_ip_addr;
+    src_ip_addr.s_addr = p.ip->iph_sourceip;
 
-    // if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0")
-    // {
-    //     // (1) Display the unmodified packet assuming it is not sent internally from 0.0.0.0
-    //     printf("Original PDU: \n");
-    //     for (int i = 0; i < pdu.length(); i++)
-    //         printf("%02x ", data[i]);
-    //     printf("\n");
+    if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0")
+    {
+        // (1) Display the unmodified packet assuming it is not sent internally from 0.0.0.0
+        printf("Original PDU: \n");
+        for (int i = 0; i < pdu.length(); i++)
+            printf("%02x ", data[i]);
+        printf("\n");
     
-    //     printf("PDU Length: %d\n", pdu.length());
-    //     printf("Packet source IP: %s\n", inet_ntoa(src_ip_addr));
-    //     struct in_addr dst_ip_addr;
-    //     dst_ip_addr.s_addr = p.ip->iph_destip;
-    //     printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
+        printf("PDU Length: %d\n", pdu.length());
+        printf("Packet source IP: %s\n", inet_ntoa(src_ip_addr));
+        struct in_addr dst_ip_addr;
+        dst_ip_addr.s_addr = p.ip->iph_destip;
+        printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
-    //     std::string fake_dns_ip = "127.0.0.53";
-    //     printf("Changing packet dest IP to %s\n", fake_dns_ip.c_str());
-    //     utils::set_dns_server_ip(&p, fake_dns_ip);
-    //     dst_ip_addr.s_addr = p.ip->iph_destip;
-    //     printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
+        std::string fake_dns_ip = "127.0.0.53";
+        printf("Changing packet dest IP to %s\n", fake_dns_ip.c_str());
+        utils::set_dns_server_ip(&p, fake_dns_ip);
+        dst_ip_addr.s_addr = p.ip->iph_destip;
+        printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
-    //     // print the uint_8 array
-    //     printf("Modified PDU: \n");
-    //     for (int i = 0; i < pdu.length(); i++)
-    //         printf("%02x ", data[i]);
-    //     printf("\n");
-    // }
+        // print the uint_8 array
+        printf("Modified PDU: \n");
+        for (int i = 0; i < pdu.length(); i++)
+            printf("%02x ", data[i]);
+        printf("\n");
+    }
 
     // ignore non IPv4 packets
     if ((data[0] >> 4 & 0xF) != 4)
