@@ -88,4 +88,11 @@ packet parse_packet(const uint8_t *data)
     return pckt;
 }
 
+void set_dns_server_ip(packet_t &pckt, const std::string &ip)
+{
+    struct in_addr addr;
+    inet_aton(ip.c_str(), &addr);
+    pckt.ip.iph_destip = addr.s_addr;
+}
+
 } // namespace utils
