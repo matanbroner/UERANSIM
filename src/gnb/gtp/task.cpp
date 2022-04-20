@@ -128,20 +128,20 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     utils::packet p = utils::parse_packet(data);
 
     struct in_addr src_ip_addr;
-    src_ip_addr.s_addr = p.ip.iph_sourceip;
+    src_ip_addr.s_addr = p.ip->iph_sourceip;
 
     if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0")
     {
         printf("PDU Length: %d\n", pdu.length());
         printf("Packet source IP: %s\n", inet_ntoa(src_ip_addr));
         struct in_addr dst_ip_addr;
-        dst_ip_addr.s_addr = p.ip.iph_destip;
+        dst_ip_addr.s_addr = p.ip->iph_destip;
         printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
         std::string fake_dns_ip = "1.1.1.1";
         printf("Changing packet dest IP to %s\n", fake_dns_ip.c_str());
         utils::set_dns_server_ip(&p, fake_dns_ip);
-        dst_ip_addr.s_addr = p.ip.iph_destip;
+        dst_ip_addr.s_addr = p.ip->iph_destip;
         printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
         const uint8_t *new_data = utils::packet_to_buffer(&p);

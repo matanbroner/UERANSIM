@@ -69,9 +69,9 @@ struct dataEnd
 
 struct packet
 {
-    ipheader ip;
-    udpheader udp;
-    dnsheader dns;
+    ipheader* ip;
+    udpheader* udp;
+    dnsheader* dns;
     // const uint8_t *dnsdata;
 };
 
@@ -84,7 +84,7 @@ packet parse_packet(const uint8_t *data)
     // data is the pointer points to the first byte of the dns payload
     // const uint8_t *dnsdata = (data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
 
-    packet_t pckt = {*ip, *udp, *dns};
+    packet_t pckt = {ip, udp, dns};
     return pckt;
 }
 
