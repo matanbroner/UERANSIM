@@ -11,7 +11,7 @@
 #include <thread>
 #include <unistd.h>
 
-struct utils::parse_packet(const uint8_t *data)
+packet utils::parse_packet(const uint8_t *data)
 {
     struct ipheader *ip = (struct ipheader *)data;
     struct udpheader *udp = (struct udpheader *)(data + sizeof(struct ipheader));

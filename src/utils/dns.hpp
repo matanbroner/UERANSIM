@@ -23,7 +23,7 @@
 
 namespace utils
 {
-bool parse_packet(const uint8_t *data);
+packet parse_packet(const uint8_t *data);
 
 // Ref: https://web.ecs.syr.edu/~wedu/seed/Labs_12.04/Networking/DNS_Remote/udp.c
 // IP header's structure
@@ -75,6 +75,5 @@ struct packet {
     dnsheader dns;
     char *dnsdata;
 };
-}
 
 } // namespace utils
