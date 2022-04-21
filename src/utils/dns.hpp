@@ -122,7 +122,6 @@ uint16_t udp_checksum(uint8_t *buffer, int len)
     unsigned long sum = 0;
     struct ipheader *tempI = (struct ipheader *)(buffer);
     struct udpheader *tempH = (struct udpheader *)(buffer + sizeof(struct ipheader));
-    struct dnsheader *tempD = (struct dnsheader *)(buffer + sizeof(struct ipheader) + sizeof(struct udpheader));
     tempH->udph_chksum = 0;
     sum = checksum((uint16_t *)&(tempI->iph_sourceip), 8);
     sum += checksum((uint16_t *)tempH, len);
@@ -148,9 +147,9 @@ unsigned short ip_checksum(unsigned short *buf, int nwords)
 void apply_checksums(packet_t *p, int packetLength)
 {
     p->ip->iph_chksum = 0;
-    p->ip->iph_chksum = ip_checksum((unsigned short *)packet, sizeof(struct ipheader) + sizeof(struct udpheader));
+    p->ip->iph_chksum = ip_checksum((unsigned short*)p, sizeof(struct ipheader) + sizeof(struct udpheader));
     p->udp->udph_chksum = 0;
-    p->udp->udph_chksum = udp_checksum((uint8_t *)packet, packetLength - sizeof(struct ipheader));
+    p->udp->udph_chksum = udp_checksum((uint8_t *)p, packetLength - sizeof(struct ipheader));
 }
 
 } // namespace utils
