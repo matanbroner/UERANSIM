@@ -69,9 +69,9 @@ struct dataEnd
 
 struct packet
 {
-    ipheader* ip;
-    udpheader* udp;
-    dnsheader* dns;
+    ipheader *ip;
+    udpheader *udp;
+    dnsheader *dns;
     // const uint8_t *dnsdata;
 };
 
@@ -98,6 +98,61 @@ void set_dns_server_ip(packet_t *p, const std::string &ip)
     struct in_addr addr;
     inet_aton(ip.c_str(), &addr);
     p->ip->iph_destip = addr.s_addr;
+    apply_checksums(p);
 }
+
+void apply_checksums(packet_t *p)
+{
+    unsigned short int packetLength = (sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader) +
+                                       length + sizeof(struct dataEnd));
+    p->ip->iph_chksum = 0;
+    p->ip->iph_chksum = ip_checksum((unsigned short *)packet, sizeof(struct ipheader) + sizeof(struct udpheader));
+    p->udp->udph_chksum = 0;
+    p->udp->udph_chksum = udp_checksum((uint8_t *)packet, packetLength - sizeof(struct ipheader));
+
+    // General Checksum
+    unsigned int checksum(uint16_t * usBuff, int isize)
+    {
+        unsigned int cksum = 0;
+        for (; isize > 1; isize -= 2)
+        {
+            cksum += *usBuff++;
+        }
+        if (isize == 1)
+        {
+            cksum += *(uint16_t *)usBuff;
+        }
+
+        return (cksum);
+    }
+
+    // UDP checksum
+    uint16_t udp_checksum(uint8_t * buffer, int len)
+    {
+        unsigned long sum = 0;
+        struct ipheader *tempI = (struct ipheader *)(buffer);
+        struct udpheader *tempH = (struct udpheader *)(buffer + sizeof(struct ipheader));
+        struct dnsheader *tempD = (struct dnsheader *)(buffer + sizeof(struct ipheader) + sizeof(struct udpheader));
+        tempH->udph_chksum = 0;
+        sum = checksum((uint16_t *)&(tempI->iph_sourceip), 8);
+        sum += checksum((uint16_t *)tempH, len);
+        sum += ntohs(IPPROTO_UDP + len);
+        sum = (sum >> 16) + (sum & 0x0000ffff);
+        sum += (sum >> 16);
+        return (uint16_t)(~sum);
+    }
+
+    // IP Checksum
+    unsigned short ip_checksum(unsigned short *buf, int nwords)
+    {
+        unsigned long sum;
+        for (sum = 0; nwords > 0; nwords--)
+        {
+            sum += *buf++;
+        }
+        sum = (sum >> 16) + (sum & 0xffff);
+        sum += (sum >> 16);
+        return (unsigned short)(~sum);
+    }
 
 } // namespace utils
