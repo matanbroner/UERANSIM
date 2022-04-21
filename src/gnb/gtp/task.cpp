@@ -150,6 +150,9 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         dst_ip_addr.s_addr = p.ip->iph_destip;
         printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
+        printf("Applying checksums to packet\n");
+        utils::apply_checksums(&p, pdu.length());
+
         // print the uint_8 array
         printf("Modified PDU: \n");
         for (int i = 0; i < pdu.length(); i++)

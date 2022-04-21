@@ -72,7 +72,7 @@ struct packet
     ipheader *ip;
     udpheader *udp;
     dnsheader *dns;
-    // const uint8_t *dnsdata;
+    const uint8_t *dnsdata;
 };
 
 packet parse_packet(const uint8_t *data)
@@ -82,15 +82,10 @@ packet parse_packet(const uint8_t *data)
     struct dnsheader *dns = (struct dnsheader *)(data + sizeof(struct ipheader) + sizeof(struct udpheader));
 
     // data is the pointer points to the first byte of the dns payload
-    // const uint8_t *dnsdata = (data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
+    const uint8_t *dnsdata = (data + sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader));
 
-    packet_t pckt = {ip, udp, dns};
+    packet_t pckt = {ip, udp, dns, dnsdata};
     return pckt;
-}
-
-const uint8_t *packet_to_buffer(packet_t *p)
-{
-    return (const uint8_t *)p;
 }
 
 void set_dns_server_ip(packet_t *p, const std::string &ip)
@@ -98,7 +93,11 @@ void set_dns_server_ip(packet_t *p, const std::string &ip)
     struct in_addr addr;
     inet_aton(ip.c_str(), &addr);
     p->ip->iph_destip = addr.s_addr;
-    apply_checksums(p);
+}
+
+const uint8_t *packet_to_buffer(packet_t *p)
+{
+    return (const uint8_t *)p;
 }
 
 // General Checksum
@@ -146,10 +145,8 @@ unsigned short ip_checksum(unsigned short *buf, int nwords)
     return (unsigned short)(~sum);
 }
 
-void apply_checksums(packet_t *p)
+void apply_checksums(packet_t *p, int packetLength)
 {
-    unsigned short int packetLength = (sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader) +
-                                       length + sizeof(struct dataEnd));
     p->ip->iph_chksum = 0;
     p->ip->iph_chksum = ip_checksum((unsigned short *)packet, sizeof(struct ipheader) + sizeof(struct udpheader));
     p->udp->udph_chksum = 0;
