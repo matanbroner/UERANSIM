@@ -101,16 +101,6 @@ void set_dns_server_ip(packet_t *p, const std::string &ip)
     apply_checksums(p);
 }
 
-void apply_checksums(packet_t *p)
-{
-    unsigned short int packetLength = (sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader) +
-                                       length + sizeof(struct dataEnd));
-    p->ip->iph_chksum = 0;
-    p->ip->iph_chksum = ip_checksum((unsigned short *)packet, sizeof(struct ipheader) + sizeof(struct udpheader));
-    p->udp->udph_chksum = 0;
-    p->udp->udph_chksum = udp_checksum((uint8_t *)packet, packetLength - sizeof(struct ipheader));
-}
-
 // General Checksum
 unsigned int checksum(uint16_t *usBuff, int isize)
 {
@@ -154,6 +144,16 @@ unsigned short ip_checksum(unsigned short *buf, int nwords)
     sum = (sum >> 16) + (sum & 0xffff);
     sum += (sum >> 16);
     return (unsigned short)(~sum);
+}
+
+void apply_checksums(packet_t *p)
+{
+    unsigned short int packetLength = (sizeof(struct ipheader) + sizeof(struct udpheader) + sizeof(struct dnsheader) +
+                                       length + sizeof(struct dataEnd));
+    p->ip->iph_chksum = 0;
+    p->ip->iph_chksum = ip_checksum((unsigned short *)packet, sizeof(struct ipheader) + sizeof(struct udpheader));
+    p->udp->udph_chksum = 0;
+    p->udp->udph_chksum = udp_checksum((uint8_t *)packet, packetLength - sizeof(struct ipheader));
 }
 
 } // namespace utils
