@@ -196,10 +196,6 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         else
         {
             m_logger->debug("Sending GTP PDU");
-            printf("Modified PDU: \n");
-            for (int i = 0; i < gtpPdu.length(); i++)
-                printf("%02x ", gtpPdu.data()[i]);
-            printf("\n");
             m_udpServer->send(InetAddress(pduSession->upTunnel.address, cons::GtpPort), gtpPdu);
         }
     }
