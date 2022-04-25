@@ -240,7 +240,7 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
         // is from the desired IP
         printf("Parsing incoming packet\n");
         utils::packet p = utils::parse_packet(data);
-        printf("Packet source IP: %s\n", inet_ntoa(p.ip->iph_sourceip));
+        printf("Parse complete\n");
         utils::set_source_ip(&p, "8.8.8.8");
         utils::apply_checksums(&p, gtp->payload.length());
 
