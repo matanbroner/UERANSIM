@@ -130,7 +130,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     struct in_addr src_ip_addr;
     src_ip_addr.s_addr = p.ip->iph_sourceip;
 
-    if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0")
+    if (false && std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0")
     {
         // (1) Display the unmodified packet assuming it is not sent internally from 0.0.0.0
         printf("Original PDU: \n");
