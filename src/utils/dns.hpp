@@ -134,10 +134,10 @@ uint16_t udp_checksum(uint8_t *buffer, int len)
 void compute_ip_checksum(struct ipheader *iphdrp)
 {
     iphdrp->iph_chksum = 0;
-    iphdrp->iph_chksum = compute_ip_checksum((unsigned short *)iphdrp, iphdrp->iph_ihl << 2);
+    iphdrp->iph_chksum = compute_ip_checksum_util((unsigned short *)iphdrp, iphdrp->iph_ihl << 2);
 }
 /* Compute checksum for count bytes starting at addr, using one's complement of one's complement sum*/
-static unsigned short compute_ip_checksum(unsigned short *addr, unsigned int count)
+static unsigned short compute_ip_checksum_util(unsigned short *addr, unsigned int count)
 {
     register unsigned long sum = 0;
     while (count > 1)
