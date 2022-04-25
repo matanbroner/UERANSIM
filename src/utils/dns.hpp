@@ -179,7 +179,7 @@ void apply_checksums(packet_t *p, int packetLength)
 {
     p->ip->iph_chksum = 0;
     // p->ip->iph_chksum = ip_checksum((unsigned short*)p, sizeof(struct ipheader) + sizeof(struct udpheader));
-    p->ip->iph_chksum = ip_checksum_alt(p, sizeof(struct ipheader) + sizeof(struct udpheader));
+    p->ip->iph_chksum = ip_checksum_alt(p, sizeof(struct ipheader));
     // p->udp->udph_chksum = 0;
     // p->udp->udph_chksum = udp_checksum((uint8_t *)p, packetLength - sizeof(struct ipheader));
 }
