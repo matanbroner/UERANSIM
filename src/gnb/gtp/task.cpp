@@ -233,7 +233,7 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
 
         // print the uint_8 array
         printf("Original Incoming GTP Payload: \n");
-        for (int i = 0; i < data->length(); i++)
+        for (int i = 0; i < w->data.length(); i++)
             printf("%02x ", data[i]);
 
         // Set the original source IP to trick the recipient into believing the reply
@@ -246,7 +246,7 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
 
         // print the uint_8 array
         printf("Modified Incoming GTP Payload: \n");
-        for (int i = 0; i < gtp->payload.length(); i++)
+        for (int i = 0; i < w->data.length(); i++)
             printf("%02x ", data[i]);
 
         m_base->mrTask->push(w);
