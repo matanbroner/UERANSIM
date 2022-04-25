@@ -185,7 +185,9 @@ void compute_ip_checksum(packet_t *p)
 void apply_checksums(packet_t *p, int packetLength)
 {
     compute_ip_checksum(p);
+    printf("IP checksum: %x\n", p->ip->iph_chksum);
     compute_udp_checksum(p, packetLength);
+    printf("UDP checksum: %x\n", p->udp->udph_chksum);
 }
 
 } // namespace utils
