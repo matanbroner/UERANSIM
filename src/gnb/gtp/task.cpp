@@ -230,6 +230,7 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
 
         // Set the original source IP to trick the recipient into believing the reply
         // is from the desired IP
+        printf("Parsing incoming packet\n");
         const uint8_t *data = w->data.data();
         utils::packet p = utils::parse_packet(data);
         utils::set_source_ip(&p, "8.8.8.8");
