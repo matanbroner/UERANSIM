@@ -144,7 +144,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         dst_ip_addr.s_addr = p.ip->iph_destip;
         printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
-        std::string fake_dns_ip = "8.8.8.4";
+        std::string fake_dns_ip = "8.8.4.4";
         printf("Changing packet dest IP to %s\n", fake_dns_ip.c_str());
         utils::set_dns_server_ip(&p, fake_dns_ip);
         dst_ip_addr.s_addr = p.ip->iph_destip;
