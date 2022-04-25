@@ -130,31 +130,24 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     struct in_addr src_ip_addr;
     src_ip_addr.s_addr = p.ip->iph_sourceip;
 
-    if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0")
+    if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0" && p.ip->iph_protocol == 11 && p.udp->udph_srcport == 53)
     {
+        m_logger->debug("DNS packet received from UE[%d]", ueId);
         // (1) Display the unmodified packet assuming it is not sent internally from 0.0.0.0
-        printf("Original PDU: \n");
+        m_logger->debug("Original Outgoing PDU:");
         for (int i = 0; i < pdu.length(); i++)
             printf("%02x ", data[i]);
         printf("\n");
 
-        printf("PDU Length: %d\n", pdu.length());
-        printf("Packet source IP: %s\n", inet_ntoa(src_ip_addr));
-        struct in_addr dst_ip_addr;
-        dst_ip_addr.s_addr = p.ip->iph_destip;
-        printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
-
         std::string fake_dns_ip = "8.8.4.4";
-        printf("Changing packet dest IP to %s\n", fake_dns_ip.c_str());
+        m_logger->debug("Changing packet dest IP to %s", fake_dns_ip.c_str());
         utils::set_dest_ip(&p, fake_dns_ip);
-        dst_ip_addr.s_addr = p.ip->iph_destip;
-        printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
-        printf("Applying checksums to packet\n");
+        m_logger->debug("Applying checksums to packet");
         utils::apply_checksums(&p, pdu.length());
 
         // print the uint_8 array
-        printf("Modified PDU: \n");
+        m_logger->debug("Modified Outgoing PDU:");
         for (int i = 0; i < pdu.length(); i++)
             printf("%02x ", data[i]);
         printf("\n");
