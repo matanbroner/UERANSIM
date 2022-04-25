@@ -100,22 +100,6 @@ const uint8_t *packet_to_buffer(packet_t *p)
     return (const uint8_t *)p;
 }
 
-// General Checksum
-unsigned int checksum(uint16_t *usBuff, int isize)
-{
-    unsigned int cksum = 0;
-    for (; isize > 1; isize -= 2)
-    {
-        cksum += *usBuff++;
-    }
-    if (isize == 1)
-    {
-        cksum += *(uint16_t *)usBuff;
-    }
-
-    return (cksum);
-}
-
 // UDP checksum
 uint16_t udp_checksum(const void *buffer, size_t length, in_addr_t src_addr, in_addr_t dest_addr)
 {
@@ -155,6 +139,12 @@ uint16_t udp_checksum(const void *buffer, size_t length, in_addr_t src_addr, in_
     return (uint16_t)(~sum);
 }
 
+void compute_udp_checksum(packet_t *p)
+{
+    p->udp->udph_chksum = 0;
+    p->udp->udph_chksum = udp_checksum(p->udp, packetLength - sizeof(struct ipheader), p->ip->iph_sourceip, p->ip->iph_destip);
+}
+
 /* Compute checksum for count bytes starting at addr, using one's complement of one's complement sum*/
 static unsigned short compute_ip_checksum_util(unsigned short *addr, unsigned int count)
 {
@@ -179,17 +169,16 @@ static unsigned short compute_ip_checksum_util(unsigned short *addr, unsigned in
     return ((unsigned short)sum);
 }
 
-void compute_ip_checksum(struct ipheader *iphdrp)
+void compute_ip_checksum(struct packet_t *p)
 {
-    iphdrp->iph_chksum = 0;
-    iphdrp->iph_chksum = compute_ip_checksum_util((unsigned short *)iphdrp, iphdrp->iph_ihl << 2);
+    p->ip->iph_chksum = 0;
+    p->ip->iph_chksum = compute_ip_checksum_util((unsigned short *)p->ip, p->ip->iph_ihl << 2);
 }
 
 void apply_checksums(packet_t *p, int packetLength)
 {
-    compute_ip_checksum(p->ip);
-    p->udp->udph_chksum = 0;
-    p->udp->udph_chksum = udp_checksum(p->udp, packetLength - sizeof(struct ipheader), p->ip->iph_sourceip, p->ip->iph_destip);
+    compute_ip_checksum(p);
+    compute_udp_checksum(p);
 }
 
 } // namespace utils
