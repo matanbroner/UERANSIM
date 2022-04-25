@@ -234,6 +234,11 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
         utils::set_source_ip(&p, "8.8.8.8");
         utils::apply_checksums(&p, gtp->payload.length());
 
+        // print the uint_8 array
+        printf("Modified Incoming GTP Payload: \n");
+        for (int i = 0; i < gtp->payload.length(); i++)
+            printf("%02x ", w->data.data()[i]);
+
         m_base->mrTask->push(w);
     }
 
