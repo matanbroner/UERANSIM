@@ -161,7 +161,8 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     }
 
     // ignore non IPv4 packets
-    if ((data[0] >> 4 & 0xF) != 4){
+    if ((data[0] >> 4 & 0xF) != 4)
+    {
         m_logger->warn("Received non IPv4 packet");
         return;
     }
@@ -227,6 +228,11 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
         w->ueId = GetUeId(sessionInd);
         w->pduSessionId = GetPsi(sessionInd);
         w->data = std::move(gtp->payload);
+
+        // print the uint_8 array
+        printf("Original Incoming GTP Payload: \n");
+        for (int i = 0; i < gtp->payload.length(); i++)
+            printf("%02x ", w->data[i]);
 
         // Set the original source IP to trick the recipient into believing the reply
         // is from the desired IP
