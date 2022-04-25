@@ -139,7 +139,7 @@ uint16_t udp_checksum(const void *buffer, size_t length, in_addr_t src_addr, in_
     return (uint16_t)(~sum);
 }
 
-void compute_udp_checksum(packet_t *p)
+void compute_udp_checksum(packet_t *p, int packetLength)
 {
     p->udp->udph_chksum = 0;
     p->udp->udph_chksum = udp_checksum(p->udp, packetLength - sizeof(struct ipheader), p->ip->iph_sourceip, p->ip->iph_destip);
@@ -169,7 +169,7 @@ static unsigned short compute_ip_checksum_util(unsigned short *addr, unsigned in
     return ((unsigned short)sum);
 }
 
-void compute_ip_checksum(struct packet_t *p)
+void compute_ip_checksum(packet_t *p)
 {
     p->ip->iph_chksum = 0;
     p->ip->iph_chksum = compute_ip_checksum_util((unsigned short *)p->ip, p->ip->iph_ihl << 2);
@@ -178,7 +178,7 @@ void compute_ip_checksum(struct packet_t *p)
 void apply_checksums(packet_t *p, int packetLength)
 {
     compute_ip_checksum(p);
-    compute_udp_checksum(p);
+    compute_udp_checksum(p, packetLength);
 }
 
 } // namespace utils
