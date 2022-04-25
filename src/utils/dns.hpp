@@ -159,7 +159,7 @@ static unsigned short compute_ip_checksum(unsigned short *addr, unsigned int cou
 
 void apply_checksums(packet_t *p, int packetLength)
 {
-    compute_ip_checksum(p->ip)
+    compute_ip_checksum(p->ip);
     // p->udp->udph_chksum = 0;
     // p->udp->udph_chksum = udp_checksum((uint8_t *)p, packetLength - sizeof(struct ipheader));
 }
