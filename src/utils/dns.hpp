@@ -164,8 +164,8 @@ void compute_ip_checksum(struct ipheader *iphdrp)
 void apply_checksums(packet_t *p, int packetLength)
 {
     compute_ip_checksum(p->ip);
-    // p->udp->udph_chksum = 0;
-    // p->udp->udph_chksum = udp_checksum((uint8_t *)p, packetLength - sizeof(struct ipheader));
+    p->udp->udph_chksum = 0;
+    p->udp->udph_chksum = udp_checksum((uint8_t *)p, packetLength - sizeof(struct ipheader));
 }
 
 } // namespace utils
