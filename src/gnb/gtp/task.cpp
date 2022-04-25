@@ -246,6 +246,7 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
         src_ip_addr.s_addr = p.ip->iph_sourceip;
         printf("Packet source IP before modification: %s\n", inet_ntoa(src_ip_addr));
         utils::set_source_ip(&p, "8.8.8.8");
+        src_ip_addr.s_addr = p.ip->iph_sourceip;
         printf("Packet source IP after modification: %s\n", inet_ntoa(src_ip_addr));
         utils::apply_checksums(&p, gtp->payload.length());
 
