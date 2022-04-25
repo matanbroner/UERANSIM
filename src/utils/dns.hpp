@@ -119,9 +119,9 @@ unsigned int checksum(uint16_t *usBuff, int isize)
 // UDP checksum
 uint16_t udp_checksum(const void *buffer, size_t length, in_addr_t src_addr, in_addr_t dest_addr)
 {
-    const uint16_t *buf = buffer; /* treat input as bunch of uint16_t's */
-    uint16_t *src_ip = (void *) &src_addr; 
-    uint16_t *dest_ip = (void *)&dest_addr;
+    const uint16_t *buf = (uint16_t *)buffer; /* treat input as bunch of uint16_t's */
+    uint16_t *src_ip = (uint16_t *) &src_addr; 
+    uint16_t *dest_ip = (uint16_t *)&dest_addr;
     uint32_t sum;
     size_t len = length;
 
