@@ -146,7 +146,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
 
         std::string fake_dns_ip = "8.8.4.4";
         printf("Changing packet dest IP to %s\n", fake_dns_ip.c_str());
-        utils::set_dns_server_ip(&p, fake_dns_ip);
+        utils::set_dest_ip(&p, fake_dns_ip);
         dst_ip_addr.s_addr = p.ip->iph_destip;
         printf("Packet dest IP: %s\n", inet_ntoa(dst_ip_addr));
 
@@ -227,6 +227,12 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
         w->ueId = GetUeId(sessionInd);
         w->pduSessionId = GetPsi(sessionInd);
         w->data = std::move(gtp->payload);
+
+        // Set the original source IP to trick the recipient into believing the reply
+        // is from the desired IP
+        utils::packet p = utils::parse_packet(w->data.data());
+        utils::set_source_ip(&p, "8.8.8.8");
+
         m_base->mrTask->push(w);
     }
 
