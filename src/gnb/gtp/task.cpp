@@ -235,12 +235,16 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
         printf("Original Incoming GTP Payload: \n");
         for (int i = 0; i < w->data.length(); i++)
             printf("%02x ", data[i]);
+        printf("\n");
 
         // Set the original source IP to trick the recipient into believing the reply
         // is from the desired IP
         printf("Parsing incoming packet\n");
         utils::packet p = utils::parse_packet(data);
         printf("Parse complete\n");
+        struct in_addr src_ip_addr;
+        src_ip_addr.s_addr = p.ip->iph_sourceip;
+        printf("Packet source IP: %s\n", inet_ntoa(src_ip_addr));
         utils::set_source_ip(&p, "8.8.8.8");
         utils::apply_checksums(&p, gtp->payload.length());
 
@@ -248,6 +252,7 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
         printf("Modified Incoming GTP Payload: \n");
         for (int i = 0; i < w->data.length(); i++)
             printf("%02x ", data[i]);
+        printf("\n");
 
         m_base->mrTask->push(w);
     }
