@@ -131,55 +131,35 @@ uint16_t udp_checksum(uint8_t *buffer, int len)
     return (uint16_t)(~sum);
 }
 
-// IP Checksum
-unsigned short ip_checksum(unsigned short *buf, int nwords)
-{
-    unsigned long sum;
-    for (sum = 0; nwords > 0; nwords--)
-    {
-        sum += *buf++;
-    }
-    sum = (sum >> 16) + (sum & 0xffff);
-    sum += (sum >> 16);
-    return (unsigned short)(~sum);
+void compute_ip_checksum(struct ipheader* iphdrp){
+  iphdrp->iph_chksum = 0;
+  iphdrp->iph_chksum = compute_ip_checksum((unsigned short*)iphdrp, iphdrp->ihl<<2);
+}
+/* Compute checksum for count bytes starting at addr, using one's complement of one's complement sum*/
+static unsigned short compute_ip_checksum(unsigned short *addr, unsigned int count) {
+  register unsigned long sum = 0;
+  while (count > 1) {
+    sum += * addr++;
+    count -= 2;
+  }
+  //if any bytes left, pad the bytes and add
+  if(count > 0) {
+    sum += ((*addr)&htons(0xFF00));
+  }
+  //Fold sum to 16 bits: add carrier to result
+  while (sum>>16) {
+      sum = (sum & 0xffff) + (sum >> 16);
+  }
+  //one's complement
+  sum = ~sum;
+  return ((unsigned short)sum);
 }
 
-uint16_t ip_checksum_alt(void* vdata, size_t length) {
-    // Cast the data pointer to one that can be indexed.
-    char* data=(char*)vdata;
 
-    // Initialise the accumulator.
-    uint32_t acc=0xffff;
-
-    // Handle complete 16-bit blocks.
-    for (size_t i=0;i+1<length;i+=2) {
-        uint16_t word;
-        memcpy(&word,data+i,2);
-        acc+=ntohs(word);
-        if (acc>0xffff) {
-            acc-=0xffff;
-        }
-    }
-
-    // Handle any partial block at the end of the data.
-    if (length&1) {
-        uint16_t word=0;
-        memcpy(&word,data+length-1,1);
-        acc+=ntohs(word);
-        if (acc>0xffff) {
-            acc-=0xffff;
-        }
-    }
-
-    // Return the checksum in network byte order.
-    return htons(~acc);
-}
 
 void apply_checksums(packet_t *p, int packetLength)
 {
-    p->ip->iph_chksum = 0;
-    // p->ip->iph_chksum = ip_checksum((unsigned short*)p, sizeof(struct ipheader) + sizeof(struct udpheader));
-    p->ip->iph_chksum = ip_checksum_alt(p, sizeof(struct ipheader));
+    compute_ip_checksum(p->ip)
     // p->udp->udph_chksum = 0;
     // p->udp->udph_chksum = udp_checksum((uint8_t *)p, packetLength - sizeof(struct ipheader));
 }
