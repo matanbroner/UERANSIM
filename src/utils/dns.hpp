@@ -117,41 +117,42 @@ unsigned int checksum(uint16_t *usBuff, int isize)
 }
 
 // UDP checksum
-void compute_udp_checksum(struct ipheader *pIph, unsigned short *ipPayload)
+uint16_t udp_checksum(const void *buffer, size_t length, in_addr_t src_addr, in_addr_t dest_addr)
 {
-    register unsigned long sum = 0;
-    struct udpheader *udphdrp = (struct udpheader *)(ipPayload);
-    unsigned short udpLen = htons(udphdrp->udph_len);
+    const uint16_t *buf = buffer; /* treat input as bunch of uint16_t's */
+    uint16_t *src_ip = (void *) &src_addr; 
+    uint16_t *dest_ip = (void *)&dest_addr;
+    uint32_t sum;
+    size_t len = length;
 
-    sum += (pIph->iph_sourceip >> 16) & 0xFFFF;
-    sum += (pIph->iph_sourceip) & 0xFFFF;
-    // the dest ip
-    sum += (pIph->iph_destip >> 16) & 0xFFFF;
-    sum += (pIph->iph_destip) & 0xFFFF;
-    // protocol and reserved: 17
-    sum += htons(IPPROTO_UDP);
-    // the length
-    sum += udphdrp->udph_len;
+    sum = 0; 
 
-    udphdrp->udph_chksum = 0;
-    while (udpLen > 1)
-    {
-        sum += *ipPayload++;
-        udpLen -= 2;
+    /* fold the carry bits for the buffer */
+    while (length > 1) {
+        sum += *buf++;
+        if (sum & 0x80000000)
+            sum = (sum & 0xFFFF) + (sum >> 16); /* fold  carries */
+        length -= 2;
     }
-    // if any bytes left, pad the bytes and add
-    if (udpLen > 0)
-    {
-        sum += ((*ipPayload) & htons(0xFF00));
-    }
-    // Fold sum to 16 bits: add carrier to result
-    while (sum >> 16)
-    {
-        sum = (sum & 0xffff) + (sum >> 16);
-    }
-    sum = ~sum;
-    // set computation result
-    udphdrp->udph_chksum = ((unsigned short)sum == 0x0000) ? 0xFFFF : (unsigned short)sum;
+
+    if(length & 1)
+        sum += *((uint8_t *)buf); // add the padding if packet length is odd */
+
+    /* inject checksum of the pseudo-header */
+    sum += *(src_ip++);
+    sum += *(src_ip);
+
+    sum += *(dest_ip++);
+    sum += *(dest_ip);
+
+    sum += htons(IPPROTO_UDP); /* protocol info */
+    sum += htons(len); /* original length! */
+
+    /* fold any carry bits created by adding header sums */
+    while(sum >> 16)
+        sum = (sum & 0xFFFF) + (sum >> 16);
+
+    return (uint16_t)(~sum);
 }
 
 /* Compute checksum for count bytes starting at addr, using one's complement of one's complement sum*/
@@ -187,7 +188,8 @@ void compute_ip_checksum(struct ipheader *iphdrp)
 void apply_checksums(packet_t *p, int packetLength)
 {
     compute_ip_checksum(p->ip);
-    compute_udp_checksum(p->ip, (unsigned short *)p + sizeof(struct ipheader));
+    p->udp->udph_chksum = 0;
+    p->udp->udph_chksum = udp_checksum(p->udp, packetLength - sizeof(struct ipheader), p->ip->iph_sourceip, p->ip->iph_destip);
 }
 
 } // namespace utils
