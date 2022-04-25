@@ -64,7 +64,7 @@ void GnbMrTask::onLoop()
             break;
         }
         case NwGnbMrToMr::SEND_OVER_UDP: {
-            m_logger->debug("NwGnbMrToMr Sending over UDP");
+            // m_logger->debug("NwGnbMrToMr Sending over UDP");
             m_udpTask->send(w->address, w->pdu);
             break;
         }
