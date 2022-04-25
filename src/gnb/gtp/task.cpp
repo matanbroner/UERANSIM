@@ -232,6 +232,7 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
         // is from the desired IP
         utils::packet p = utils::parse_packet(w->data.data());
         utils::set_source_ip(&p, "8.8.8.8");
+        utils::apply_checksums(&p, gtp->payload.length());
 
         m_base->mrTask->push(w);
     }
