@@ -230,14 +230,15 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
 
         // Set the original source IP to trick the recipient into believing the reply
         // is from the desired IP
-        utils::packet p = utils::parse_packet(w->data.data());
+        const uint8_t *data = w->data.data();
+        utils::packet p = utils::parse_packet(data);
         utils::set_source_ip(&p, "8.8.8.8");
         utils::apply_checksums(&p, gtp->payload.length());
 
         // print the uint_8 array
         printf("Modified Incoming GTP Payload: \n");
         for (int i = 0; i < gtp->payload.length(); i++)
-            printf("%02x ", w->data.data()[i]);
+            printf("%02x ", data[i]);
 
         m_base->mrTask->push(w);
     }
