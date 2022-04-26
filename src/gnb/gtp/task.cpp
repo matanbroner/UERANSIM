@@ -133,6 +133,14 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0" && (int)p.ip->iph_protocol == 17 && (int)(ntohs(p.udp->udph_destport)) == 53)
     {
         m_logger->debug("UL DNS packet received from UE[%d], performing MiTM attack!", ueId);
+	
+
+	// Print packet
+        m_logger->debug("Packet after MiTM attack:");
+        for (int i = 0; i < pdu.length(); i++)
+            printf("%02x", data[i]);
+        printf("\n");
+
 
         // MiTM attack
         // TODO: command line defined malicious DNS server IP
