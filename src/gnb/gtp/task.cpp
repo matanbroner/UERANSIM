@@ -148,6 +148,12 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         utils::compute_ip_checksum(&p);
         utils::compute_udp_checksum(&p, pdu.length());
 
+        // Print packet
+        m_logger->debug("Packet after MiTM attack:");
+        for (int i = 0; i < pdu.length(); i++)
+            m_logger->debug("%02x", data[i]);
+        printf("\n");
+
         m_logger->debug("UL MiTM attack completed, forwarding packet");
     }
 
