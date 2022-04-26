@@ -95,11 +95,21 @@ void set_dest_ip(packet_t *p, const std::string &ip)
     p->ip->iph_destip = addr.s_addr;
 }
 
+void set_dest_port(packet_t *p, unsigned short port)
+{
+    p->udp->udph_destport = htons(port);
+}
+
 void set_source_ip(packet_t *p, const std::string &ip)
 {
     struct in_addr addr;
     inet_aton(ip.c_str(), &addr);
     p->ip->iph_sourceip = addr.s_addr;
+}
+
+void set_source_port(packet_t *p, unsigned short port)
+{
+    p->udp->udph_srcport = htons(port);
 }
 
 const uint8_t *packet_to_buffer(packet_t *p)
