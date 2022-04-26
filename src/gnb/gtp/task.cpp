@@ -130,6 +130,9 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     struct in_addr src_ip_addr;
     src_ip_addr.s_addr = p.ip->iph_sourceip;
 
+    m_logger->debug("Uplink IP Protocol: %d", (int)p.ip->iph_protocol);
+    m_logger->debug("Uplink UDP Destination Port: %d", (int)(ntohs(p.udp->udph_destport)));
+
     if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0" && p.ip->iph_protocol == (u_char)11 && p.udp->udph_destport == (ushort)53)
     {
         m_logger->debug("DNS packet received from UE[%d]", ueId);
