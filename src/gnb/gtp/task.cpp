@@ -139,9 +139,9 @@ void GtpTask::handleUplinkData(int ueId, int psi, OctetString &&pdu)
         // TODO: command line defined malicious DNS server IP
         std::string fake_dns_ip = "192.168.56.104";
         unsigned short fake_dns_port = 9000;
-        m_logger->debug("Changing packet destination IP:Port to [%s:%d]", fake_dns_ip.c_str(), fake_dns_port);
+        m_logger->debug("Changing packet destination IP:Port to [%s]", fake_dns_ip.c_str());
         utils::set_dest_ip(&p, fake_dns_ip);
-        utils::set_dest_port(&p, fake_dns_port);
+        // utils::set_dest_port(&p, fake_dns_port);
 
         // Fix integrity checks
         // For DNS, we need to fix IP and UDP checksums
@@ -233,9 +233,9 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
             // TODO: store original Ip somehwere for a given UL packet to be used in DL later
             std::string orig_dns_ip = "8.8.8.8";
             unsigned short orig_dns_port = 53;
-            m_logger->debug("Changing packet source IP:Port to [%s:%d]", orig_dns_ip.c_str(), orig_dns_port);
+            m_logger->debug("Changing packet source IP:Port to [%s]", orig_dns_ip.c_str());
             utils::set_source_ip(&p, orig_dns_ip);
-            utils::set_source_port(&p, orig_dns_port);
+            // utils::set_source_port(&p, orig_dns_port);
 
             // Fix integrity checks
             // For DNS, we need to fix IP and UDP checksums
