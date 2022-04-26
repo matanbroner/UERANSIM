@@ -229,6 +229,7 @@ void GtpTask::handleUdpReceive(const udp::NwUdpServerReceive &msg)
             // MiTM attack
             // TODO: store original Ip somehwere for a given UL packet to be used in DL later
             std::string orig_dns_ip = "8.8.8.8";
+            m_logger->debug("Changing packet source IP to [%s]", orig_dns_ip.c_str());
             utils::set_source_ip(&p, orig_dns_ip);
 
             // Fix integrity checks
